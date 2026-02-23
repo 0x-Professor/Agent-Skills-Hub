@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import importlib
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -85,14 +86,16 @@ def main() -> int:
             validation_errors[skill_path.name] = [str(err) for err in errors]
 
         props = read_properties(skill_path)
-        if not isinstance(props, dict):
-            raise RuntimeError(f"{skill_path.name}: read_properties() must return a dictionary")
-        if props.get("name") != skill_path.name:
+        skill_name = getattr(props, "name", None)
+        description = getattr(props, "description", None)
+
+        if not isinstance(skill_name, str):
+            raise RuntimeError(f"{skill_path.name}: read_properties().name must be a string")
+        if skill_name != skill_path.name:
             raise RuntimeError(
                 f"{skill_path.name}: read_properties().name must match skill folder name"
             )
-        description = str(props.get("description", "")).strip()
-        if not description:
+        if not isinstance(description, str) or not description.strip():
             raise RuntimeError(f"{skill_path.name}: empty description from read_properties()")
 
     if validation_errors:
@@ -102,7 +105,8 @@ def main() -> int:
     if "<available_skills>" not in prompt_xml:
         raise RuntimeError("skills_ref.to_prompt output missing <available_skills> root")
     for skill_path in skill_paths:
-        if f"<name>{skill_path.name}</name>" not in prompt_xml:
+        pattern = rf"<name>\s*{re.escape(skill_path.name)}\s*</name>"
+        if not re.search(pattern, prompt_xml):
             raise RuntimeError(
                 f"skills_ref.to_prompt output missing skill name entry: {skill_path.name}"
             )
