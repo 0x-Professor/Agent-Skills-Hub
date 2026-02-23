@@ -1,0 +1,6 @@
+{
+  "pipeline_name": "weekly-status-report",
+  "sources": ["sheets://team-metrics", "drive://incident-notes"],
+  "template_doc": "docs://status-template",
+  "destination_doc": "docs://weekly-status-output"
+}

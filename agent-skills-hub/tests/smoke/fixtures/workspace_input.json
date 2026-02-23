@@ -1,0 +1,8 @@
+{
+  "automation_name": "inbox-to-sheet",
+  "services": ["gmail", "sheets"],
+  "actions": [
+    {"name": "fetch_unread", "service": "gmail"},
+    {"name": "append_row", "service": "sheets"}
+  ]
+}
