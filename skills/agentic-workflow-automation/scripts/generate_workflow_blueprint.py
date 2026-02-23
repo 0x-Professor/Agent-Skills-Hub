@@ -49,7 +49,7 @@ def render(result: dict, output_path: Path, fmt: str) -> None:
         return
 
     with output_path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["order", "name", "type"])
+        writer = csv.DictWriter(handle, fieldnames=["order", "name", "type", "on_failure"])
         writer.writeheader()
         writer.writerows(result["details"]["steps"])
 
