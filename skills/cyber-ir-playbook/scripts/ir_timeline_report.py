@@ -15,6 +15,7 @@ PHASE_RULES = [
     ("recover", ["recover", "restore", "validate"]),
     ("post-incident", ["lessons", "postmortem", "review"]),
 ]
+MAX_INPUT_BYTES = 1_048_576
 
 
 def parse_args() -> argparse.Namespace:
@@ -26,12 +27,14 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_payload(path: str | None) -> dict:
+def load_payload(path: str | None, max_input_bytes: int = MAX_INPUT_BYTES) -> dict:
     if not path:
         return {}
     payload_path = Path(path)
     if not payload_path.exists():
         raise FileNotFoundError(f"Input file not found: {payload_path}")
+    if payload_path.stat().st_size > max_input_bytes:
+        raise ValueError(f"Input file exceeds {max_input_bytes} bytes: {payload_path}")
     return json.loads(payload_path.read_text(encoding="utf-8"))
 
 

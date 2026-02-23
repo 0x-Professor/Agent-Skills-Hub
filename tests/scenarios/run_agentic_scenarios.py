@@ -228,6 +228,7 @@ def run_agentic_automation_scenario(temp_dir: Path) -> dict:
         mcp_payload,
         temp_dir,
         dry_run=False,
+        extra_args=["--allow-outside-workspace"],
     )
     assert isinstance(mcp_result, dict)
     for relative_file in mcp_result["details"]["file_map"]:
@@ -310,7 +311,7 @@ def run_skill_lifecycle_scenario(temp_dir: Path) -> dict:
         starter_payload,
         temp_dir,
         dry_run=False,
-        extra_args=["--target-dir", str(generated_root)],
+        extra_args=["--target-dir", str(generated_root), "--allow-outside-workspace"],
     )
     assert isinstance(starter_result, dict)
     generated_skill_dir = generated_root / starter_result["details"]["skill_name"]

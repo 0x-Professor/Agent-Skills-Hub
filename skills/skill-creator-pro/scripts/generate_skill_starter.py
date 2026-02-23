@@ -6,6 +6,8 @@ import csv
 import json
 from pathlib import Path
 
+MAX_INPUT_BYTES = 1_048_576
+
 
 CATEGORY_NOTES = {
     "cybersecurity": "Focus on defensive and tooling-centric workflows. Exclude exploit payload guidance.",
@@ -27,15 +29,22 @@ def parse_args() -> argparse.Namespace:
         required=False,
         help="Directory where skill scaffold should be created when dry-run is disabled.",
     )
+    parser.add_argument(
+        "--allow-outside-workspace",
+        action="store_true",
+        help="Allow --target-dir to resolve outside the current workspace.",
+    )
     return parser.parse_args()
 
 
-def load_input(path: str | None) -> dict:
+def load_input(path: str | None, max_input_bytes: int = MAX_INPUT_BYTES) -> dict:
     if not path:
         return {}
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"Input file not found: {p}")
+    if p.stat().st_size > max_input_bytes:
+        raise ValueError(f"Input file exceeds {max_input_bytes} bytes: {p}")
     return json.loads(p.read_text(encoding="utf-8"))
 
 
@@ -44,6 +53,24 @@ def normalize_name(raw: str) -> str:
     while "--" in cleaned:
         cleaned = cleaned.replace("--", "-")
     return cleaned.strip("-")
+
+
+def resolve_path_in_workspace(
+    raw_path: Path,
+    workspace_root: Path,
+    label: str,
+    allow_outside_workspace: bool,
+) -> Path:
+    resolved = raw_path.resolve()
+    if allow_outside_workspace:
+        return resolved
+    try:
+        resolved.relative_to(workspace_root)
+    except ValueError as exc:
+        raise ValueError(
+            f"{label} must be inside workspace root: {workspace_root}"
+        ) from exc
+    return resolved
 
 
 def build_skill_md(skill_name: str, description: str, note: str) -> str:
@@ -101,12 +128,20 @@ def maybe_scaffold(
     note: str,
     target_dir: Path | None,
     dry_run: bool,
+    workspace_root: Path,
+    allow_outside_workspace: bool,
 ) -> list[str]:
     artifacts: list[str] = []
     if target_dir is None:
         return artifacts
 
-    skill_dir = target_dir / skill_name
+    safe_target_dir = resolve_path_in_workspace(
+        target_dir,
+        workspace_root,
+        "target_dir",
+        allow_outside_workspace,
+    )
+    skill_dir = safe_target_dir / skill_name
     artifacts.extend(
         [
             str(skill_dir / "SKILL.md"),
@@ -148,8 +183,9 @@ def maybe_scaffold(
 def main() -> int:
     args = parse_args()
     payload = load_input(args.input)
+    workspace_root = Path.cwd().resolve()
     raw_name = payload.get("skill_name", "new-skill")
-    skill_name = normalize_name(raw_name)
+    skill_name = normalize_name(raw_name) or "new-skill"
     category = str(payload.get("category", "general")).lower().strip()
     description = str(
         payload.get(
@@ -160,7 +196,15 @@ def main() -> int:
 
     note = CATEGORY_NOTES.get(category, CATEGORY_NOTES["general"])
     target_dir = Path(args.target_dir) if args.target_dir else None
-    artifacts = maybe_scaffold(skill_name, description, note, target_dir, args.dry_run)
+    artifacts = maybe_scaffold(
+        skill_name,
+        description,
+        note,
+        target_dir,
+        args.dry_run,
+        workspace_root,
+        args.allow_outside_workspace,
+    )
 
     result = {
         "status": "ok",

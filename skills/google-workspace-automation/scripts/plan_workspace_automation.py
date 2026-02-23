@@ -14,6 +14,7 @@ SERVICE_SCOPES = {
     "calendar": "https://www.googleapis.com/auth/calendar",
     "docs": "https://www.googleapis.com/auth/documents",
 }
+MAX_INPUT_BYTES = 1_048_576
 
 
 def parse_args() -> argparse.Namespace:
@@ -25,12 +26,14 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_payload(path: str | None) -> dict:
+def load_payload(path: str | None, max_input_bytes: int = MAX_INPUT_BYTES) -> dict:
     if not path:
         return {}
     p = Path(path)
     if not p.exists():
         raise FileNotFoundError(f"Input file not found: {p}")
+    if p.stat().st_size > max_input_bytes:
+        raise ValueError(f"Input file exceeds {max_input_bytes} bytes: {p}")
     return json.loads(p.read_text(encoding="utf-8"))
 
 
