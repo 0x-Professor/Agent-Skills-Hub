@@ -1,6 +1,6 @@
 ---
 name: docs-pipeline-automation
-description: Build repeatable data-to-document pipelines for Google Docs outputs using structured source definitions. Use when teams need automated report assembly, periodic status documents, and consistent formatting from Sheets/Drive inputs.
+description: Build repeatable data-to-Docs pipelines from Sheets and Drive sources. Use for automated status reports, template-based document assembly, and scheduled publishing workflows.
 ---
 
 # Docs Pipeline Automation

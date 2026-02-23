@@ -13,6 +13,54 @@ sys.path.insert(0, str(TOOLS_DIR))
 
 from quick_validate import validate_skill  # noqa: E402
 
+CLAUDE_DESCRIPTION_LIMIT = 200
+
+
+def parse_frontmatter(skill_dir: Path) -> tuple[dict | None, str | None]:
+    skill_md = skill_dir / "SKILL.md"
+    content = skill_md.read_text(encoding="utf-8")
+    if "[TODO" in content or "TODO:" in content:
+        return None, "contains TODO placeholder text"
+
+    chunks = content.split("---", 2)
+    if len(chunks) < 3:
+        return None, "invalid frontmatter delimiter layout"
+
+    try:
+        data = yaml.safe_load(chunks[1])
+    except yaml.YAMLError as exc:
+        return None, f"invalid YAML frontmatter ({exc})"
+    if not isinstance(data, dict):
+        return None, "frontmatter must be a mapping"
+    return data, None
+
+
+def validate_frontmatter_portability(skill_dir: Path, skill_name: str) -> list[str]:
+    errors: list[str] = []
+    frontmatter, parse_error = parse_frontmatter(skill_dir)
+    if parse_error:
+        return [f"{skill_name}: {parse_error}"]
+
+    assert frontmatter is not None
+    name_value = frontmatter.get("name")
+    description_value = frontmatter.get("description")
+    if name_value != skill_name:
+        errors.append(f"{skill_name}: frontmatter name must match folder name")
+
+    if not isinstance(description_value, str):
+        errors.append(f"{skill_name}: frontmatter description must be a string")
+    else:
+        desc_len = len(description_value.strip())
+        if desc_len == 0:
+            errors.append(f"{skill_name}: frontmatter description cannot be empty")
+        if desc_len > CLAUDE_DESCRIPTION_LIMIT:
+            errors.append(
+                f"{skill_name}: frontmatter description exceeds {CLAUDE_DESCRIPTION_LIMIT} chars "
+                f"(got {desc_len})"
+            )
+
+    return errors
+
 
 def validate_openai_yaml(skill_dir: Path, skill_name: str) -> list[str]:
     errors: list[str] = []
@@ -82,6 +130,7 @@ def main() -> int:
             errors.append(f"{skill_name}: {msg}")
             continue
 
+        errors.extend(validate_frontmatter_portability(skill_dir, skill_name))
         errors.extend(validate_openai_yaml(skill_dir, skill_name))
         errors.extend(validate_scripts_dir(skill_dir, skill_name))
 

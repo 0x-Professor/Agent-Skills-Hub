@@ -1,6 +1,6 @@
 ---
 name: agentic-mcp-server-builder
-description: Scaffold MCP server projects and generate baseline contract checks for tool interfaces. Use when building or standardizing MCP servers, defining tool schemas, and creating repeatable server starter layouts.
+description: Scaffold MCP server projects and baseline tool contract checks. Use for defining tool schemas, generating starter server layouts, and validating MCP-ready structure.
 ---
 
 # Agentic MCP Server Builder

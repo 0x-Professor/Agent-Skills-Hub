@@ -1,6 +1,6 @@
 ---
 name: google-workspace-automation
-description: Design Google Workspace automations across Gmail, Drive, Sheets, and Calendar with scope-aware plans and audit-ready outputs. Use when creating repeatable daily task automation that requires explicit API scope and action sequencing.
+description: Design Gmail, Drive, Sheets, and Calendar automations with scope-aware plans. Use for repeatable daily task automation with explicit OAuth scopes and audit-ready outputs.
 ---
 
 # Google Workspace Automation

@@ -1,6 +1,6 @@
 ---
 name: dl-transformer-finetune
-description: Build transformer fine-tuning run plans with task-specific settings, hyperparameters, and model card outputs. Use when teams need repeatable DL fine-tuning configuration for Hugging Face/PyTorch style workflows.
+description: Build transformer fine-tuning run plans with task settings, hyperparameters, and model-card outputs. Use for repeatable Hugging Face or PyTorch finetuning workflows.
 ---
 
 # DL Transformer Finetune

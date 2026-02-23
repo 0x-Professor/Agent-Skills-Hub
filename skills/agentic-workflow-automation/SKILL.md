@@ -1,6 +1,6 @@
 ---
 name: agentic-workflow-automation
-description: Generate structured agent workflow blueprints for multi-step automation and orchestration. Use when teams need reusable workflow definitions, trigger/action chains, and deterministic automation planning artifacts.
+description: Generate reusable multi-step agent workflow blueprints. Use for trigger/action orchestration, deterministic workflow definitions, and automation handoff artifacts.
 ---
 
 # Agentic Workflow Automation
