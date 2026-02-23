@@ -54,11 +54,14 @@ Output contract for `json` format:
 Requirements:
 - Python 3.10+
 - `pyyaml`
+- `skills-ref`
 
 ```bat
-python -m pip install --user pyyaml
+python -m pip install --user pyyaml skills-ref
 python tests\smoke\validate_all_skills.py
 python tests\smoke\run_smoke.py
+python tests\scenarios\run_agentic_scenarios.py
+python tests\scenarios\run_agentskills_reference_checks.py
 ```
 
 ## CI
@@ -66,6 +69,8 @@ python tests\smoke\run_smoke.py
 GitHub Actions runs:
 - skill validation
 - smoke tests for every script (`--help`, `json`, `md`, and `csv` dry-runs)
+- scenario/E2E tests for agentic application flows
+- `skills-ref` compatibility checks against Agent Skills reference APIs
 
 ## Cross-Platform Compatibility
 
@@ -87,6 +92,15 @@ Compatibility notes:
 - Agent Skills ecosystem:
   - Reference spec and integrations: https://agentskills.io/spec and https://agentskills.io/integrations
 
+## Agent Skills Compliance
+
+This repository is aligned to the Agent Skills reference model from `agentskills.io`:
+- every skill includes `SKILL.md` with required frontmatter (`name`, `description`)
+- frontmatter `name` matches the skill folder name
+- optional frontmatter keys accepted by validation include `compatibility`, `license`, `allowed-tools`, and `metadata`
+- every skill includes `agents/openai.yaml` with `display_name`, `short_description`, and `default_prompt`
+- compatibility checks are validated in `tests/scenarios/run_agentskills_reference_checks.py` using `skills-ref`
+
 ## Packaging for Claude Uploads
 
 Use this helper to package all skills as individual zip files:
@@ -102,6 +116,12 @@ The automated checks enforce:
 - cross-platform description limits (Claude-compatible)
 - script CLI contract across all skills
 - deterministic dry-run behavior for every script
+- scenario-level integration coverage across all 11 skills
+- Agent Skills reference library validation and prompt generation checks
+
+## Contributing
+
+See `CONTRIBUTING.md` for contribution workflow, quality gates, and review requirements.
 
 ## Publish To GitHub
 

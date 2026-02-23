@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import importlib
 import json
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from zipfile import ZipFile
@@ -28,9 +30,9 @@ def assert_zip_structure(output_dir: Path) -> dict:
         raise RuntimeError("Missing packaging helper: tools/package_skills_for_claude.py")
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    rc = __import__("subprocess").run(
+    rc = subprocess.run(
         [
-            __import__("sys").executable,
+            sys.executable,
             str(package_script),
             "--skills-dir",
             str(SKILLS_DIR),
