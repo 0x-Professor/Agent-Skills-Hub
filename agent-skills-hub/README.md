@@ -91,6 +91,12 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
+Or run:
+
+```bat
+tools\publish_github.bat
+```
+
 ## Security Scope
 
 Cybersecurity skills in this repo are defensive or tooling-oriented. They do not ship exploit payloads or real-target offensive playbooks.
