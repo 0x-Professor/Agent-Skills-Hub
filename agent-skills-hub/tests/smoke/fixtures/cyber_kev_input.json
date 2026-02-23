@@ -1,0 +1,8 @@
+{
+  "assets": [
+    {"name": "web-api", "criticality": "high"}
+  ],
+  "vulnerabilities": [
+    {"cve": "CVE-2025-0001", "asset": "web-api", "known_exploited": true, "cvss": 9.4}
+  ]
+}

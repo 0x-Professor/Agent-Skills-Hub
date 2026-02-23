@@ -1,0 +1,7 @@
+{
+  "incident_id": "INC-1001",
+  "events": [
+    {"time": "2026-02-20T08:10:00Z", "event": "alert_received", "severity": "high"},
+    {"time": "2026-02-20T08:40:00Z", "event": "containment_started", "severity": "high"}
+  ]
+}
