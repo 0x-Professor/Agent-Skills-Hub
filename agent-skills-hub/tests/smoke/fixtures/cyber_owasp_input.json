@@ -1,0 +1,6 @@
+{
+  "findings": [
+    {"id": "F-1", "title": "SQL injection in login endpoint", "severity": "critical"},
+    {"id": "F-2", "title": "Missing MFA for admin console", "severity": "high"}
+  ]
+}

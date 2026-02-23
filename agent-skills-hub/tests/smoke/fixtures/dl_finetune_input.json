@@ -1,0 +1,7 @@
+{
+  "model_name": "distilbert-base-uncased",
+  "task": "sequence-classification",
+  "dataset": "imdb",
+  "num_epochs": 3,
+  "learning_rate": 2e-5
+}

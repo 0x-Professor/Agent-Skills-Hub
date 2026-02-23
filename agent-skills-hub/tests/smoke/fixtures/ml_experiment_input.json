@@ -1,0 +1,6 @@
+{
+  "experiment_name": "churn-baseline",
+  "dataset": "data/churn.csv",
+  "metrics": ["accuracy", "f1"],
+  "parameters": {"model": "xgboost", "max_depth": 6}
+}

@@ -1,0 +1,7 @@
+{
+  "weights": {"accuracy": 0.6, "f1": 0.4},
+  "models": [
+    {"name": "model-a", "metrics": {"accuracy": 0.88, "f1": 0.81}},
+    {"name": "model-b", "metrics": {"accuracy": 0.86, "f1": 0.84}}
+  ]
+}
