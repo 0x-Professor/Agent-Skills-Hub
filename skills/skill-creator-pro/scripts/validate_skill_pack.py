@@ -9,6 +9,18 @@ from pathlib import Path
 
 import yaml
 
+MAX_NAME_LENGTH = 64
+MAX_DESCRIPTION_LENGTH = 1024
+MAX_COMPATIBILITY_LENGTH = 500
+ALLOWED_FRONTMATTER_KEYS = {
+    "name",
+    "description",
+    "license",
+    "compatibility",
+    "allowed-tools",
+    "metadata",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Validate a repository of skills.")
@@ -55,6 +67,47 @@ def validate_skill(skill_dir: Path) -> list[str]:
         if required_key not in frontmatter:
             errors.append(f"{skill_name}: missing frontmatter key '{required_key}'")
 
+    unexpected = set(frontmatter.keys()) - ALLOWED_FRONTMATTER_KEYS
+    if unexpected:
+        errors.append(
+            f"{skill_name}: unsupported frontmatter keys: {', '.join(sorted(unexpected))}"
+        )
+
+    name = frontmatter.get("name")
+    if not isinstance(name, str) or not name.strip():
+        errors.append(f"{skill_name}: frontmatter name must be a non-empty string")
+    else:
+        name = name.strip()
+        if name != skill_name:
+            errors.append(f"{skill_name}: frontmatter name must match skill directory")
+        if len(name) > MAX_NAME_LENGTH:
+            errors.append(f"{skill_name}: frontmatter name exceeds {MAX_NAME_LENGTH} chars")
+        if not re.match(r"^[a-z0-9-]+$", name):
+            errors.append(
+                f"{skill_name}: frontmatter name must be lowercase hyphen-case with digits"
+            )
+        if name.startswith("-") or name.endswith("-") or "--" in name:
+            errors.append(f"{skill_name}: frontmatter name has invalid hyphen placement")
+
+    description = frontmatter.get("description")
+    if not isinstance(description, str) or not description.strip():
+        errors.append(f"{skill_name}: frontmatter description must be a non-empty string")
+    elif len(description.strip()) > MAX_DESCRIPTION_LENGTH:
+        errors.append(
+            f"{skill_name}: frontmatter description exceeds {MAX_DESCRIPTION_LENGTH} chars"
+        )
+
+    compatibility = frontmatter.get("compatibility")
+    if compatibility is not None:
+        if not isinstance(compatibility, str) or not compatibility.strip():
+            errors.append(
+                f"{skill_name}: compatibility must be a non-empty string when provided"
+            )
+        elif len(compatibility.strip()) > MAX_COMPATIBILITY_LENGTH:
+            errors.append(
+                f"{skill_name}: compatibility exceeds {MAX_COMPATIBILITY_LENGTH} chars"
+            )
+
     openai_yaml = skill_dir / "agents" / "openai.yaml"
     if not openai_yaml.exists():
         errors.append(f"{skill_name}: missing agents/openai.yaml")
@@ -67,6 +120,24 @@ def validate_skill(skill_dir: Path) -> list[str]:
             for required_key in ("display_name", "short_description", "default_prompt"):
                 if required_key not in interface:
                     errors.append(f"{skill_name}: missing interface.{required_key}")
+            short_description = interface.get("short_description")
+            if isinstance(short_description, str):
+                length = len(short_description.strip())
+                if length < 25 or length > 64:
+                    errors.append(
+                        f"{skill_name}: interface.short_description must be 25-64 chars"
+                    )
+            elif short_description is not None:
+                errors.append(f"{skill_name}: interface.short_description must be a string")
+
+            default_prompt = interface.get("default_prompt")
+            if isinstance(default_prompt, str):
+                if f"${skill_name}" not in default_prompt:
+                    errors.append(
+                        f"{skill_name}: interface.default_prompt must mention ${skill_name}"
+                    )
+            elif default_prompt is not None:
+                errors.append(f"{skill_name}: interface.default_prompt must be a string")
 
     scripts_dir = skill_dir / "scripts"
     if not scripts_dir.exists() or not list(scripts_dir.glob("*.py")):

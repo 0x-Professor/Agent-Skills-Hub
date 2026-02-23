@@ -110,6 +110,11 @@ def main() -> int:
             raise RuntimeError(
                 f"skills_ref.to_prompt output missing skill name entry: {skill_path.name}"
             )
+        expected_location = str((skill_path / "SKILL.md").resolve())
+        if expected_location not in prompt_xml:
+            raise RuntimeError(
+                f"skills_ref.to_prompt output missing SKILL.md location for {skill_path.name}"
+            )
 
     with tempfile.TemporaryDirectory() as tmp:
         packaging_summary = assert_zip_structure(Path(tmp) / "claude-zips")
