@@ -12,6 +12,8 @@ from pathlib import Path
 import yaml
 
 MAX_SKILL_NAME_LENGTH = 64
+MAX_DESCRIPTION_LENGTH = 1024
+MAX_COMPATIBILITY_LENGTH = 500
 
 
 def validate_skill(skill_path: Path | str) -> tuple[bool, str]:
@@ -38,7 +40,14 @@ def validate_skill(skill_path: Path | str) -> tuple[bool, str]:
     except yaml.YAMLError as exc:
         return False, f"Invalid YAML in frontmatter: {exc}"
 
-    allowed_properties = {"name", "description", "license", "allowed-tools", "metadata"}
+    allowed_properties = {
+        "name",
+        "description",
+        "license",
+        "compatibility",
+        "allowed-tools",
+        "metadata",
+    }
 
     unexpected_keys = set(frontmatter.keys()) - allowed_properties
     if unexpected_keys:
@@ -59,6 +68,8 @@ def validate_skill(skill_path: Path | str) -> tuple[bool, str]:
     if not isinstance(name, str):
         return False, f"Name must be a string, got {type(name).__name__}"
     name = name.strip()
+    if not name:
+        return False, "Name cannot be empty"
     if name:
         if not re.match(r"^[a-z0-9-]+$", name):
             return (
@@ -76,18 +87,42 @@ def validate_skill(skill_path: Path | str) -> tuple[bool, str]:
                 f"Name is too long ({len(name)} characters). "
                 f"Maximum is {MAX_SKILL_NAME_LENGTH} characters.",
             )
+        if name != skill_path.name:
+            return (
+                False,
+                f"Name '{name}' must match the parent directory name '{skill_path.name}'",
+            )
 
     description = frontmatter.get("description", "")
     if not isinstance(description, str):
         return False, f"Description must be a string, got {type(description).__name__}"
     description = description.strip()
-    if description:
-        if "<" in description or ">" in description:
-            return False, "Description cannot contain angle brackets (< or >)"
-        if len(description) > 1024:
+    if not description:
+        return False, "Description cannot be empty"
+    if "<" in description or ">" in description:
+        return False, "Description cannot contain angle brackets (< or >)"
+    if len(description) > MAX_DESCRIPTION_LENGTH:
+        return (
+            False,
+            f"Description is too long ({len(description)} characters). "
+            f"Maximum is {MAX_DESCRIPTION_LENGTH} characters.",
+        )
+
+    compatibility = frontmatter.get("compatibility")
+    if compatibility is not None:
+        if not isinstance(compatibility, str):
             return (
                 False,
-                f"Description is too long ({len(description)} characters). Maximum is 1024 characters.",
+                f"Compatibility must be a string when provided, got {type(compatibility).__name__}",
+            )
+        compatibility = compatibility.strip()
+        if not compatibility:
+            return False, "Compatibility cannot be empty when provided"
+        if len(compatibility) > MAX_COMPATIBILITY_LENGTH:
+            return (
+                False,
+                f"Compatibility is too long ({len(compatibility)} characters). "
+                f"Maximum is {MAX_COMPATIBILITY_LENGTH} characters.",
             )
 
     return True, "Skill is valid"

@@ -14,6 +14,7 @@ sys.path.insert(0, str(TOOLS_DIR))
 from quick_validate import validate_skill  # noqa: E402
 
 CLAUDE_DESCRIPTION_LIMIT = 200
+MAX_COMPATIBILITY_LENGTH = 500
 
 
 def parse_frontmatter(skill_dir: Path) -> tuple[dict | None, str | None]:
@@ -58,6 +59,20 @@ def validate_frontmatter_portability(skill_dir: Path, skill_name: str) -> list[s
                 f"{skill_name}: frontmatter description exceeds {CLAUDE_DESCRIPTION_LIMIT} chars "
                 f"(got {desc_len})"
             )
+
+    compatibility_value = frontmatter.get("compatibility")
+    if compatibility_value is not None:
+        if not isinstance(compatibility_value, str):
+            errors.append(f"{skill_name}: compatibility must be a string when provided")
+        else:
+            comp_len = len(compatibility_value.strip())
+            if comp_len == 0:
+                errors.append(f"{skill_name}: compatibility cannot be empty when provided")
+            if comp_len > MAX_COMPATIBILITY_LENGTH:
+                errors.append(
+                    f"{skill_name}: compatibility exceeds {MAX_COMPATIBILITY_LENGTH} chars "
+                    f"(got {comp_len})"
+                )
 
     return errors
 
