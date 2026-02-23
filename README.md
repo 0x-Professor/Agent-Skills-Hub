@@ -13,6 +13,7 @@ This repository ships 11 production-ready skills:
   .github/workflows/ci.yml
   skills/
   tests/smoke/
+  tests/scenarios/
   tools/
 ```
 
@@ -62,6 +63,7 @@ python tests\smoke\validate_all_skills.py
 python tests\smoke\run_smoke.py
 python tests\scenarios\run_agentic_scenarios.py
 python tests\scenarios\run_agentskills_reference_checks.py
+tools\run_checks.bat
 ```
 
 ## CI
