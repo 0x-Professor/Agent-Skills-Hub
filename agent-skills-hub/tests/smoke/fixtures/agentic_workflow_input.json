@@ -1,0 +1,9 @@
+{
+  "workflow_name": "daily-ops-digest",
+  "trigger": "cron(0 9 * * 1-5)",
+  "steps": [
+    {"name": "collect_incidents", "type": "http"},
+    {"name": "summarize", "type": "llm"},
+    {"name": "post_to_chat", "type": "http"}
+  ]
+}

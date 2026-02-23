@@ -1,0 +1,7 @@
+{
+  "server_name": "ops-helper",
+  "tools": [
+    {"name": "list_incidents", "description": "List active incidents"},
+    {"name": "get_incident", "description": "Get incident details"}
+  ]
+}
