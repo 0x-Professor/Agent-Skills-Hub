@@ -6,6 +6,8 @@ import csv
 import json
 from pathlib import Path
 
+MAX_INPUT_BYTES = 1_048_576
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Scaffold an MCP server starter package.")
@@ -13,15 +15,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True, help="Path to output artifact.")
     parser.add_argument("--format", choices=["json", "md", "csv"], default="json")
     parser.add_argument("--dry-run", action="store_true", help="Run without writing scaffold files.")
+    parser.add_argument(
+        "--allow-outside-workspace",
+        action="store_true",
+        help="Allow scaffold_root to resolve outside the current workspace.",
+    )
     return parser.parse_args()
 
 
-def load_payload(path: str | None) -> dict:
+def load_payload(path: str | None, max_input_bytes: int = MAX_INPUT_BYTES) -> dict:
     if not path:
         return {}
     input_path = Path(path)
     if not input_path.exists():
         raise FileNotFoundError(f"Input file not found: {input_path}")
+    if input_path.stat().st_size > max_input_bytes:
+        raise ValueError(
+            f"Input file exceeds {max_input_bytes} bytes: {input_path}"
+        )
     return json.loads(input_path.read_text(encoding="utf-8"))
 
 
@@ -30,6 +41,24 @@ def normalize_name(value: str) -> str:
     while "--" in cleaned:
         cleaned = cleaned.replace("--", "-")
     return cleaned.strip("-")
+
+
+def resolve_path_in_workspace(
+    raw_path: Path,
+    workspace_root: Path,
+    label: str,
+    allow_outside_workspace: bool,
+) -> Path:
+    resolved = raw_path.resolve()
+    if allow_outside_workspace:
+        return resolved
+    try:
+        resolved.relative_to(workspace_root)
+    except ValueError as exc:
+        raise ValueError(
+            f"{label} must be inside workspace root: {workspace_root}"
+        ) from exc
+    return resolved
 
 
 def render(result: dict, output_path: Path, fmt: str) -> None:
@@ -79,7 +108,8 @@ def maybe_write_scaffold(root: Path, file_map: list[str], dry_run: bool) -> None
 def main() -> int:
     args = parse_args()
     payload = load_payload(args.input)
-    server_name = normalize_name(str(payload.get("server_name", "mcp-server")))
+    workspace_root = Path.cwd().resolve()
+    server_name = normalize_name(str(payload.get("server_name", "mcp-server"))) or "mcp-server"
     tools = payload.get("tools", [])
     if not isinstance(tools, list):
         tools = []
@@ -93,7 +123,13 @@ def main() -> int:
             }
         )
 
-    scaffold_root = Path(payload.get("scaffold_root", f"artifacts/{server_name}"))
+    raw_scaffold_root = Path(payload.get("scaffold_root", f"artifacts/{server_name}"))
+    scaffold_root = resolve_path_in_workspace(
+        raw_scaffold_root,
+        workspace_root,
+        "scaffold_root",
+        args.allow_outside_workspace,
+    )
     file_map = [
         "server.py",
         "tool_registry.py",

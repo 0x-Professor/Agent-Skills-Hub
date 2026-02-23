@@ -16,6 +16,9 @@ if errorlevel 1 exit /b 1
 python tests\scenarios\run_agentskills_reference_checks.py
 if errorlevel 1 exit /b 1
 
+python tests\security\run_security_regressions.py
+if errorlevel 1 exit /b 1
+
 python tools\package_skills_for_claude.py --output artifacts\claude-zips
 if errorlevel 1 exit /b 1
 

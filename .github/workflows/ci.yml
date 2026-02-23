@@ -33,5 +33,8 @@ jobs:
       - name: Run Agent Skills reference checks
         run: python tests/scenarios/run_agentskills_reference_checks.py
 
+      - name: Run security regression tests
+        run: python tests/security/run_security_regressions.py
+
       - name: Package skills for Claude uploads
         run: python tools/package_skills_for_claude.py --output artifacts/claude-zips

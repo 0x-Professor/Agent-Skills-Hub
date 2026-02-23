@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 CRITICALITY_WEIGHT = {"critical": 3.0, "high": 2.0, "medium": 1.0, "low": 0.5}
+MAX_INPUT_BYTES = 1_048_576
 
 
 def parse_args() -> argparse.Namespace:
@@ -19,12 +20,14 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_payload(path: str | None) -> dict:
+def load_payload(path: str | None, max_input_bytes: int = MAX_INPUT_BYTES) -> dict:
     if not path:
         return {}
     data_path = Path(path)
     if not data_path.exists():
         raise FileNotFoundError(f"Input file not found: {data_path}")
+    if data_path.stat().st_size > max_input_bytes:
+        raise ValueError(f"Input file exceeds {max_input_bytes} bytes: {data_path}")
     return json.loads(data_path.read_text(encoding="utf-8"))
 
 

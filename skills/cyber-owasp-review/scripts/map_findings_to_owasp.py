@@ -19,6 +19,7 @@ OWASP_MAP = {
     "A09 Security Logging and Monitoring Failures": ["logging", "monitoring", "audit trail"],
     "A10 SSRF": ["ssrf", "server-side request forgery"],
 }
+MAX_INPUT_BYTES = 1_048_576
 
 
 def parse_args() -> argparse.Namespace:
@@ -30,12 +31,14 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_payload(path: str | None) -> dict:
+def load_payload(path: str | None, max_input_bytes: int = MAX_INPUT_BYTES) -> dict:
     if not path:
         return {}
     input_path = Path(path)
     if not input_path.exists():
         raise FileNotFoundError(f"Input file not found: {input_path}")
+    if input_path.stat().st_size > max_input_bytes:
+        raise ValueError(f"Input file exceeds {max_input_bytes} bytes: {input_path}")
     return json.loads(input_path.read_text(encoding="utf-8"))
 
 
