@@ -1,3 +1,4 @@
 interface:
   display_name: "Google Workspace Automation"
-  short_description: "Help with Google Workspace Automation tasks"
+  short_description: "Automate Gmail Drive Sheets and Calendar"
+  default_prompt: "Use $google-workspace-automation to design a scope-aware Workspace automation flow."
