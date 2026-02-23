@@ -43,6 +43,28 @@ def assert_result(path: Path) -> None:
         raise AssertionError("details must be an object")
 
 
+def assert_nonempty(path: Path) -> None:
+    if not path.exists():
+        raise AssertionError(f"Missing output file: {path}")
+    if path.stat().st_size == 0:
+        raise AssertionError(f"Output file is empty: {path}")
+
+
+def run_for_format(script_path: Path, fixture: Path, output_path: Path, fmt: str) -> subprocess.CompletedProcess[str]:
+    cmd = [
+        sys.executable,
+        str(script_path),
+        "--input",
+        str(fixture),
+        "--output",
+        str(output_path),
+        "--format",
+        fmt,
+        "--dry-run",
+    ]
+    return run(cmd)
+
+
 def main() -> int:
     failures: list[str] = []
 
@@ -63,31 +85,43 @@ def main() -> int:
             continue
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            output_path = Path(tmpdir) / "out.json"
-            dry_run_cmd = [
-                sys.executable,
-                str(script_path),
-                "--input",
-                str(fixture),
-                "--output",
-                str(output_path),
-                "--format",
-                "json",
-                "--dry-run",
-            ]
-            dry_result = run(dry_run_cmd)
+            output_json = Path(tmpdir) / "out.json"
+            dry_result = run_for_format(script_path, fixture, output_json, "json")
             if dry_result.returncode != 0:
                 failures.append(
                     f"{rel_script}: dry-run failed\nstdout={dry_result.stdout}\nstderr={dry_result.stderr}"
                 )
                 continue
-            if not output_path.exists():
-                failures.append(f"{rel_script}: output file not created")
-                continue
             try:
-                assert_result(output_path)
+                assert_result(output_json)
             except Exception as exc:
                 failures.append(f"{rel_script}: invalid output contract: {exc}")
+                continue
+
+            output_md = Path(tmpdir) / "out.md"
+            md_result = run_for_format(script_path, fixture, output_md, "md")
+            if md_result.returncode != 0:
+                failures.append(
+                    f"{rel_script}: md format failed\nstdout={md_result.stdout}\nstderr={md_result.stderr}"
+                )
+                continue
+            try:
+                assert_nonempty(output_md)
+            except Exception as exc:
+                failures.append(f"{rel_script}: invalid markdown output: {exc}")
+                continue
+
+            output_csv = Path(tmpdir) / "out.csv"
+            csv_result = run_for_format(script_path, fixture, output_csv, "csv")
+            if csv_result.returncode != 0:
+                failures.append(
+                    f"{rel_script}: csv format failed\nstdout={csv_result.stdout}\nstderr={csv_result.stderr}"
+                )
+                continue
+            try:
+                assert_nonempty(output_csv)
+            except Exception as exc:
+                failures.append(f"{rel_script}: invalid csv output: {exc}")
 
     if failures:
         print("Smoke test failures:")
