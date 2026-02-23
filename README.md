@@ -9,11 +9,11 @@ This repository ships 11 production-ready skills:
 ## Repo Layout
 
 ```text
-agent-skills-hub/
+./
+  .github/workflows/ci.yml
   skills/
   tests/smoke/
   tools/
-  .github/workflows/ci.yml
 ```
 
 ## Included Skills
@@ -65,15 +65,43 @@ python tests\smoke\run_smoke.py
 
 GitHub Actions runs:
 - skill validation
-- smoke tests for every script (`--help` and `--dry-run`)
+- smoke tests for every script (`--help`, `json`, `md`, and `csv` dry-runs)
 
-## Install Skills In Agent Environments
+## Cross-Platform Compatibility
 
-This repo uses Agent Skills-compatible structure (`SKILL.md` + `agents/openai.yaml`).
-Copy any skill folder from `skills/<skill-name>` into your target agent's skills directory.
-Use platform docs for exact install path:
-- https://agentskills.io/integrations
-- https://docs.anthropic.com/en/docs/claude-code/skills
+This repository follows the Agent Skills pattern:
+- `SKILL.md` for core behavior and triggers
+- `agents/openai.yaml` for OpenAI/Codex UI metadata
+- deterministic scripts with `--dry-run`
+
+Compatibility notes:
+- Codex:
+  - Skills can live in repo-level `.agents/skills` or user-level configured skill paths.
+  - This repo keeps source-of-truth skills in `skills/`.
+  - Copy a skill folder into your Codex skill path, or install from this repository.
+  - Reference: https://developers.openai.com/codex/configuration#skills
+- Claude Code / Claude.ai custom skills:
+  - Zip each skill with `<skill-name>/SKILL.md` at zip root for upload.
+  - Keep `description` <= 200 chars for Claude.ai upload compatibility.
+  - Reference: https://support.anthropic.com/en/articles/12522847-building-custom-skills-for-claude-ai
+- Agent Skills ecosystem:
+  - Reference spec and integrations: https://agentskills.io/spec and https://agentskills.io/integrations
+
+## Packaging for Claude Uploads
+
+Use this helper to package all skills as individual zip files:
+
+```bat
+python tools\package_skills_for_claude.py --output artifacts\claude-zips
+```
+
+## Production Readiness Checks
+
+The automated checks enforce:
+- valid frontmatter and metadata contracts
+- cross-platform description limits (Claude-compatible)
+- script CLI contract across all skills
+- deterministic dry-run behavior for every script
 
 ## Publish To GitHub
 
