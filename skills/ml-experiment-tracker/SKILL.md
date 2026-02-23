@@ -1,6 +1,6 @@
 ---
 name: ml-experiment-tracker
-description: Plan reproducible ML experiment runs with explicit parameters, metrics, and artifact expectations. Use when teams need experiment templates, baseline runs, and tracking-ready outputs before model training or evaluation.
+description: Plan reproducible ML experiment runs with explicit parameters, metrics, and artifacts. Use before model training to standardize tracking-ready experiment definitions.
 ---
 
 # ML Experiment Tracker

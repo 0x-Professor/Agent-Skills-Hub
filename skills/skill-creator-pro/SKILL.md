@@ -1,6 +1,6 @@
 ---
 name: skill-creator-pro
-description: Create and evolve production-ready skills with consistent structure, validation, and reusable assets. Use when defining new skills, upgrading existing skills, enforcing repository-wide skill contracts, or generating category-specific skill starters for cybersecurity, AI/ML+DL, agentic AI, and Google Workspace automation.
+description: Create and evolve production-ready skills with reusable scripts, references, and validation. Use for new skill creation, skill upgrades, and enforcing consistent metadata and structure.
 ---
 
 # Skill Creator Pro

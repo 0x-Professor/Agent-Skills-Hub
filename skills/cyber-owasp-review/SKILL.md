@@ -1,6 +1,6 @@
 ---
 name: cyber-owasp-review
-description: Map security findings to OWASP Top 10 categories and generate remediation checklists. Use when teams need structured application security review outputs, finding normalization, and prioritization based on OWASP-aligned risk areas.
+description: Map application security findings to OWASP Top 10 categories and generate remediation checklists. Use for normalized AppSec review outputs and category-level prioritization.
 ---
 
 # Cyber OWASP Review

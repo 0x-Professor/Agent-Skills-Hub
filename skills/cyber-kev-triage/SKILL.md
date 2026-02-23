@@ -1,6 +1,6 @@
 ---
 name: cyber-kev-triage
-description: Prioritize vulnerability remediation using KEV-style active exploitation context and asset criticality. Use when security teams need CVE triage, patch ordering, risk scoring, and reporting for exploited or high-risk vulnerabilities.
+description: Prioritize vulnerability remediation using KEV-style exploitation context plus asset criticality. Use for CVE triage, patch order decisions, and remediation reporting.
 ---
 
 # Cyber KEV Triage

@@ -1,6 +1,6 @@
 ---
 name: cyber-ir-playbook
-description: Build incident response timelines and report packs aligned to structured IR phases. Use when security teams need to convert raw incident events into investigation summaries, containment status, recovery actions, and stakeholder-ready reports.
+description: Build incident response timelines and report packs from event logs. Use for detection-to-recovery reporting, phase tracking, and stakeholder-ready incident summaries.
 ---
 
 # Cyber IR Playbook

@@ -1,6 +1,6 @@
 ---
 name: ml-model-eval-benchmark
-description: Compare model candidates with weighted metrics and consistent ranking outputs. Use when teams need deterministic evaluation summaries, leaderboard generation, and model promotion decisions based on reproducible criteria.
+description: Compare model candidates using weighted metrics and deterministic ranking outputs. Use for benchmark leaderboards and model promotion decisions.
 ---
 
 # ML Model Eval Benchmark
