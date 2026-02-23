@@ -7,4 +7,7 @@ if errorlevel 1 exit /b 1
 python tests\smoke\run_smoke.py
 if errorlevel 1 exit /b 1
 
+python tools\package_skills_for_claude.py --output artifacts\claude-zips
+if errorlevel 1 exit /b 1
+
 echo [OK] Validation and smoke tests passed.

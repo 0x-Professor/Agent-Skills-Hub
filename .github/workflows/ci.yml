@@ -26,3 +26,6 @@ jobs:
 
       - name: Run smoke tests
         run: python tests/smoke/run_smoke.py
+
+      - name: Package skills for Claude uploads
+        run: python tools/package_skills_for_claude.py --output artifacts/claude-zips
