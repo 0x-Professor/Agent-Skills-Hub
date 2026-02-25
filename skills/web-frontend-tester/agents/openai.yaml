@@ -1,0 +1,7 @@
+interface:
+  display_name: "Web Frontend Tester"
+  short_description: "Plan E2E, a11y, visual, and Lighthouse test coverage."
+  default_prompt: |
+    Use $web-frontend-tester to define frontend testing coverage using
+    Playwright, Testing Library, axe-core, Lighthouse CI, and visual
+    regression checks, then output frontend-test-report.json.

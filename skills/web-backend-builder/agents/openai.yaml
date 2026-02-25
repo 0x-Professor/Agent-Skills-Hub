@@ -1,0 +1,7 @@
+interface:
+  display_name: "Web Backend Builder"
+  short_description: "Plan backend models, ORM, endpoints, and OpenAPI."
+  default_prompt: |
+    Use $web-backend-builder to scaffold backend architecture from the
+    project config, produce entity and endpoint plans, and emit openapi.yaml
+    plus backend-report.json.

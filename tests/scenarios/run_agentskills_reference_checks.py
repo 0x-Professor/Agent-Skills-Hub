@@ -51,7 +51,10 @@ def assert_zip_structure(output_dir: Path) -> dict:
         )
 
     zip_files = sorted(output_dir.glob("*.zip"))
-    if len(zip_files) != len([p for p in SKILLS_DIR.iterdir() if p.is_dir()]):
+    expected_skill_dirs = [
+        p for p in SKILLS_DIR.iterdir() if p.is_dir() and (p / "SKILL.md").exists()
+    ]
+    if len(zip_files) != len(expected_skill_dirs):
         raise RuntimeError("Unexpected zip count from package_skills_for_claude.py")
 
     for zip_file in zip_files:
@@ -67,7 +70,9 @@ def assert_zip_structure(output_dir: Path) -> dict:
 
 def main() -> int:
     skills_ref = load_skills_ref()
-    skill_paths = sorted([path for path in SKILLS_DIR.iterdir() if path.is_dir()])
+    skill_paths = sorted(
+        [path for path in SKILLS_DIR.iterdir() if path.is_dir() and (path / "SKILL.md").exists()]
+    )
     if not skill_paths:
         raise RuntimeError("No skills found for Agent Skills reference checks")
 

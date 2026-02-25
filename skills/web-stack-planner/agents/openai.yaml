@@ -1,0 +1,7 @@
+interface:
+  display_name: "Web Stack Planner"
+  short_description: "Collect project brief and select web tech stack."
+  default_prompt: |
+    You are a senior full-stack architect. Use $web-stack-planner to collect
+    project requirements, guide stack selection, and output a validated
+    project-config.json before any downstream implementation begins.

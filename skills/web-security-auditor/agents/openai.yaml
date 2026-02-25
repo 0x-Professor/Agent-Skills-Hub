@@ -1,0 +1,7 @@
+interface:
+  display_name: "Web Security Auditor"
+  short_description: "Run SAST/SCA/DAST and security hardening review."
+  default_prompt: |
+    Use $web-security-auditor to aggregate security findings across static
+    analysis, dependency risks, dynamic scans, secrets exposure, and API
+    logic checks into security-report.json.

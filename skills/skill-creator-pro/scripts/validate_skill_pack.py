@@ -197,7 +197,9 @@ def main() -> int:
         return 1
 
     errors: list[str] = []
-    skill_dirs = sorted([path for path in skill_root.iterdir() if path.is_dir()])
+    skill_dirs = sorted(
+        [path for path in skill_root.iterdir() if path.is_dir() and (path / "SKILL.md").exists()]
+    )
     for skill_dir in skill_dirs:
         errors.extend(validate_skill(skill_dir))
 
