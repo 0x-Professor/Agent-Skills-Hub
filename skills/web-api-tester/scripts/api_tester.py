@@ -136,10 +136,14 @@ def main() -> int:
         }
         api_report_path.write_text(json.dumps(api_report_payload, indent=2), encoding="utf-8")
 
+    artifacts = [str(report_path)]
+    if not args.dry_run:
+        artifacts = [str(api_report_path), str(test_matrix_path), str(report_path)]
+
     result = {
         "status": status,
         "summary": "Generated API test coverage plan from OpenAPI contract",
-        "artifacts": [str(api_report_path), str(test_matrix_path), str(report_path)],
+        "artifacts": artifacts,
         "details": {
             "openapi_path": str(openapi_path) if openapi_path else "",
             "endpoint_count": len(endpoints),

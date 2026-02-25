@@ -229,10 +229,14 @@ def main() -> int:
         }
         backend_report_path.write_text(json.dumps(backend_report_payload, indent=2), encoding="utf-8")
 
+    artifacts = [str(report_path)]
+    if not args.dry_run:
+        artifacts = [str(openapi_path), str(backend_report_path), str(report_path)] + created
+
     result = {
         "status": "ok" if config_path else "warning",
         "summary": "Generated backend framework, ORM, and API contract plan",
-        "artifacts": [str(openapi_path), str(backend_report_path), str(report_path)] + created,
+        "artifacts": artifacts,
         "details": {
             "project_config_path": str(config_path) if config_path else "",
             "backend": backend,

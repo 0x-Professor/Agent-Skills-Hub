@@ -194,10 +194,14 @@ def main() -> int:
         }
         ux_report_path.write_text(json.dumps(ux_payload, indent=2), encoding="utf-8")
 
+    artifacts = [str(report_path)]
+    if not args.dry_run:
+        artifacts = [str(sitemap_path), str(wireframes_path), str(ux_report_path), str(report_path)]
+
     result = {
         "status": "ok" if config_path else "warning",
         "summary": "Generated UX architecture plan from project config",
-        "artifacts": [str(sitemap_path), str(wireframes_path), str(ux_report_path), str(report_path)],
+        "artifacts": artifacts,
         "details": {
             "project_config_path": str(config_path) if config_path else "",
             "project_type": project_type,

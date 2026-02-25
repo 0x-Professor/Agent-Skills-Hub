@@ -70,6 +70,8 @@ DEPLOY_OPTIONS = [
     "digitalocean",
     "cloudflare pages",
 ]
+TRUE_STRINGS = {"true", "1", "yes", "y", "on"}
+FALSE_STRINGS = {"false", "0", "no", "n", "off", ""}
 
 
 def parse_args() -> argparse.Namespace:
@@ -122,6 +124,22 @@ def normalize_list(raw: Any, allowed: list[str]) -> list[str]:
         if lower in allowed and lower not in normalized:
             normalized.append(lower)
     return normalized
+
+
+def parse_bool(raw: Any, default: bool = False) -> tuple[bool, bool]:
+    if raw is None:
+        return default, True
+    if isinstance(raw, bool):
+        return raw, True
+    if isinstance(raw, (int, float)):
+        return bool(raw), True
+    if isinstance(raw, str):
+        value = raw.strip().lower()
+        if value in TRUE_STRINGS:
+            return True, True
+        if value in FALSE_STRINGS:
+            return False, True
+    return default, False
 
 
 def build_config(payload: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
@@ -193,7 +211,12 @@ def build_config(payload: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
         warnings,
         "storage provider",
     )
-    i18n_enabled = bool(integrations.get("i18n", payload.get("i18n", False)))
+    i18n_raw = integrations.get("i18n")
+    if i18n_raw is None:
+        i18n_raw = payload.get("i18n", False)
+    i18n_enabled, i18n_valid = parse_bool(i18n_raw, default=False)
+    if not i18n_valid:
+        warnings.append(f"Unsupported i18n value '{i18n_raw}', fallback to 'false'")
 
     config = {
         "project_name": project_name,
@@ -267,10 +290,14 @@ def main() -> int:
     if not args.dry_run:
         config_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
 
+    artifacts = [str(report_path)]
+    if not args.dry_run:
+        artifacts.insert(0, str(config_path))
+
     result = {
         "status": "warning" if warnings else "ok",
         "summary": "Validated stack selections and prepared canonical project config",
-        "artifacts": [str(config_path), str(report_path)],
+        "artifacts": artifacts,
         "details": {
             "project_config": config,
             "validation_warnings": warnings,

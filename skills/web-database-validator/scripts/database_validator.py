@@ -157,10 +157,18 @@ def main() -> int:
         }
         db_report_path.write_text(json.dumps(db_payload, indent=2), encoding="utf-8")
 
+    result_status = status
+    if not config_path and result_status == "ok":
+        result_status = "warning"
+
+    artifacts = [str(report_path)]
+    if not args.dry_run:
+        artifacts.insert(0, str(db_report_path))
+
     result = {
-        "status": status if config_path else "warning",
+        "status": result_status,
         "summary": "Evaluated database migration and schema quality checks",
-        "artifacts": [str(db_report_path), str(report_path)],
+        "artifacts": artifacts,
         "details": {
             "project_config_path": str(config_path) if config_path else "",
             "database": config.get("stack", {}).get("database", "unknown")

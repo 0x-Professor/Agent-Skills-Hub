@@ -202,10 +202,14 @@ def main() -> int:
         }
         deploy_report_path.write_text(json.dumps(deploy_payload, indent=2), encoding="utf-8")
 
+    artifacts = [str(report_path)]
+    if not args.dry_run:
+        artifacts = [str(deploy_report_path), str(deployment_md_path), str(report_path)] + created_files
+
     result = {
         "status": status if config_path else "warning",
         "summary": "Prepared deployment config and launch readiness checklist",
-        "artifacts": [str(deploy_report_path), str(deployment_md_path), str(report_path)] + created_files,
+        "artifacts": artifacts,
         "details": {
             "project_config_path": str(config_path) if config_path else "",
             "deployment_target": deployment_target,
