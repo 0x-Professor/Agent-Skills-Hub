@@ -109,6 +109,20 @@ def sanitize_route_to_file(route: str) -> str:
     return cleaned
 
 
+def resolve_next_app_page_file(route_root: Path, route: str) -> Path:
+    segments = [segment for segment in route.strip("/").split("/") if segment]
+    if not segments:
+        return route_root / "page.tsx"
+
+    normalized_segments: list[str] = []
+    for segment in segments:
+        if segment.startswith(":") and len(segment) > 1:
+            normalized_segments.append(f"[{segment[1:]}]")
+        else:
+            normalized_segments.append(segment)
+    return route_root.joinpath(*normalized_segments) / "page.tsx"
+
+
 def scaffold_frontend(frontend_root: Path, routes: list[str], framework: str) -> list[str]:
     created: list[str] = []
     dirs = [frontend_root / "components", frontend_root / "layouts", frontend_root / "public"]
@@ -122,9 +136,34 @@ def scaffold_frontend(frontend_root: Path, routes: list[str], framework: str) ->
         created.append(str(dpath))
 
     route_root = frontend_root / ("app" if framework == "next.js" else "pages")
+    if framework == "next.js":
+        layout_file = route_root / "layout.tsx"
+        layout_file.write_text(
+            "\n".join(
+                [
+                    "import type { ReactNode } from \"react\";",
+                    "",
+                    "export default function RootLayout({ children }: { children: ReactNode }) {",
+                    "  return (",
+                    "    <html lang=\"en\">",
+                    "      <body>{children}</body>",
+                    "    </html>",
+                    "  );",
+                    "}",
+                    "",
+                ]
+            ),
+            encoding="utf-8",
+        )
+        created.append(str(layout_file))
+
     for route in routes:
-        filename = sanitize_route_to_file(route)
-        page_file = route_root / f"{filename}.tsx"
+        if framework == "next.js":
+            page_file = resolve_next_app_page_file(route_root, route)
+        else:
+            filename = sanitize_route_to_file(route)
+            page_file = route_root / f"{filename}.tsx"
+        page_file.parent.mkdir(parents=True, exist_ok=True)
         page_file.write_text(
             "\n".join(
                 [
@@ -219,10 +258,14 @@ def main() -> int:
         }
         frontend_report.write_text(json.dumps(frontend_report_payload, indent=2), encoding="utf-8")
 
+    artifacts = [str(report_path)]
+    if not args.dry_run:
+        artifacts = [str(frontend_report), str(report_path)] + created_paths
+
     result = {
         "status": "ok" if config_path else "warning",
         "summary": "Generated frontend scaffold plan and dependency inventory",
-        "artifacts": [str(frontend_report), str(report_path)] + created_paths,
+        "artifacts": artifacts,
         "details": {
             "project_config_path": str(config_path) if config_path else "",
             "framework": framework,

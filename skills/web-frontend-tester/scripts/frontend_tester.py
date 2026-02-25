@@ -120,10 +120,14 @@ def main() -> int:
         }
         frontend_test_report.write_text(json.dumps(frontend_payload, indent=2), encoding="utf-8")
 
+    artifacts = [str(report_path)]
+    if not args.dry_run:
+        artifacts = [str(frontend_test_report), str(lighthouse_path), str(report_path)]
+
     result = {
         "status": status if config_path else "warning",
         "summary": "Generated frontend E2E, a11y, visual, and performance test plan",
-        "artifacts": [str(frontend_test_report), str(lighthouse_path), str(report_path)],
+        "artifacts": artifacts,
         "details": {
             "project_config_path": str(config_path) if config_path else "",
             "playwright_journeys": journeys,

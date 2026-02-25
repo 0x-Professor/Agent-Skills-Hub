@@ -181,6 +181,19 @@ def write_output(result: dict, output_path: Path, fmt: str) -> None:
             writer.writerow(["error", err])
 
 
+def is_candidate_skill_dir(path: Path) -> bool:
+    if not path.is_dir():
+        return False
+    if (path / "SKILL.md").exists():
+        return True
+    if (path / "agents" / "openai.yaml").exists():
+        return True
+    scripts_dir = path / "scripts"
+    if scripts_dir.exists() and any(scripts_dir.glob("*.py")):
+        return True
+    return False
+
+
 def main() -> int:
     args = parse_args()
     payload = load_input(args.input)
@@ -197,9 +210,7 @@ def main() -> int:
         return 1
 
     errors: list[str] = []
-    skill_dirs = sorted(
-        [path for path in skill_root.iterdir() if path.is_dir() and (path / "SKILL.md").exists()]
-    )
+    skill_dirs = sorted([path for path in skill_root.iterdir() if is_candidate_skill_dir(path)])
     for skill_dir in skill_dirs:
         errors.extend(validate_skill(skill_dir))
 
