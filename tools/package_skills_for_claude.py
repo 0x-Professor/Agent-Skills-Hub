@@ -26,7 +26,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def iter_skill_dirs(skills_dir: Path) -> list[Path]:
-    return sorted([path for path in skills_dir.iterdir() if path.is_dir()])
+    return sorted([path for path in skills_dir.iterdir() if path.is_dir() and (path / "SKILL.md").exists()])
 
 
 def is_link_or_reparse(path: Path) -> bool:

@@ -2,9 +2,9 @@
 
 Public skill pack for AI coding/automation agents.
 
-This repository ships 11 production-ready skills:
+This repository ships 21 production-ready skills:
 - 1 meta skill: `skill-creator-pro`
-- 10 domain skills across cybersecurity, AI/ML+DL, agentic AI, and daily automation
+- 20 domain skills across cybersecurity, AI/ML+DL, agentic AI, daily automation, and web engineering
 
 ## Repo Layout
 
@@ -30,6 +30,29 @@ This repository ships 11 production-ready skills:
 - `agentic-workflow-automation`
 - `google-workspace-automation`
 - `docs-pipeline-automation`
+- `web-stack-planner`
+- `web-ux-architect`
+- `web-frontend-designer`
+- `web-backend-builder`
+- `web-auth-integrator`
+- `web-database-validator`
+- `web-api-tester`
+- `web-frontend-tester`
+- `web-security-auditor`
+- `web-deploy-launcher`
+
+## Web Builder Skills
+
+- `web-stack-planner`
+- `web-ux-architect`
+- `web-frontend-designer`
+- `web-backend-builder`
+- `web-auth-integrator`
+- `web-database-validator`
+- `web-api-tester`
+- `web-frontend-tester`
+- `web-security-auditor`
+- `web-deploy-launcher`
 
 ## Skill Contract
 
@@ -60,7 +83,9 @@ Requirements:
 ```bat
 python -m pip install --user pyyaml skills-ref
 python tests\smoke\validate_all_skills.py
+python tests\smoke\validate_web_builder_skills.py
 python tests\smoke\run_smoke.py
+python tests\scenarios\test_web_builder_skills.py
 python tests\scenarios\run_agentic_scenarios.py
 python tests\scenarios\run_agentskills_reference_checks.py
 tools\run_checks.bat
@@ -118,7 +143,7 @@ The automated checks enforce:
 - cross-platform description limits (Claude-compatible)
 - script CLI contract across all skills
 - deterministic dry-run behavior for every script
-- scenario-level integration coverage across all 11 skills
+- scenario-level integration coverage across all 21 skills
 - Agent Skills reference library validation and prompt generation checks
 
 ## Contributing

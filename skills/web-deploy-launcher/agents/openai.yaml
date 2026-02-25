@@ -1,0 +1,6 @@
+interface:
+  display_name: "Web Deploy Launcher"
+  short_description: "Generate deployment configs and final launch checklist."
+  default_prompt: |
+    Use $web-deploy-launcher to generate target deployment files, run build
+    readiness checks, and produce DEPLOYMENT.md plus deploy-report.json.

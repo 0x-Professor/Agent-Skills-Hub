@@ -358,7 +358,10 @@ def run_skill_lifecycle_scenario(temp_dir: Path) -> dict:
             f"stdout={quick_validate_proc.stdout}\nstderr={quick_validate_proc.stderr}"
         )
 
-    return {"generated_skill": generated_skill_dir.name, "validated_repo_skills": 11}
+    validated_repo_skills = len(
+        [path for path in (ROOT / "skills").iterdir() if path.is_dir() and (path / "SKILL.md").exists()]
+    )
+    return {"generated_skill": generated_skill_dir.name, "validated_repo_skills": validated_repo_skills}
 
 
 def main() -> int:

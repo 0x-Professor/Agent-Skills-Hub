@@ -1,0 +1,7 @@
+interface:
+  display_name: "Web Frontend Designer"
+  short_description: "Scaffold frontend routes, UI system, and components."
+  default_prompt: |
+    Use $web-frontend-designer to scaffold frontend structure from project
+    config and wireframes, including dependencies, route shells, and
+    accessibility-ready component layout.

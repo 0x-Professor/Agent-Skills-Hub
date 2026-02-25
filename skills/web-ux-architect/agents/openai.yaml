@@ -1,0 +1,6 @@
+interface:
+  display_name: "Web UX Architect"
+  short_description: "Generate sitemap and wireframe specs for web apps."
+  default_prompt: |
+    Use $web-ux-architect to read project-config.json, produce a sitemap,
+    write page-level wireframe specs, and output UX planning artifacts.

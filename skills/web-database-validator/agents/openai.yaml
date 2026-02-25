@@ -1,0 +1,7 @@
+interface:
+  display_name: "Web Database Validator"
+  short_description: "Validate schema, migrations, indexes, and query quality."
+  default_prompt: |
+    Use $web-database-validator to evaluate migration readiness and schema
+    quality, then output db-validation-report.json with explicit pass/fail
+    checks for constraints, indexes, and query behavior.

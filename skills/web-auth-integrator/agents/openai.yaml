@@ -1,0 +1,6 @@
+interface:
+  display_name: "Web Auth Integrator"
+  short_description: "Configure auth provider, RBAC, and session security."
+  default_prompt: |
+    Use $web-auth-integrator to apply provider-specific auth setup from
+    project config, enforce RBAC, and produce an auth-report.json checklist.

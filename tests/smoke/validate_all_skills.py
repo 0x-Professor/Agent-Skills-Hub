@@ -133,7 +133,7 @@ def main() -> int:
         return 1
 
     errors: list[str] = []
-    skill_dirs = sorted([p for p in SKILLS_DIR.iterdir() if p.is_dir()])
+    skill_dirs = sorted([p for p in SKILLS_DIR.iterdir() if p.is_dir() and (p / "SKILL.md").exists()])
     if not skill_dirs:
         print("No skills found.")
         return 1

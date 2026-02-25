@@ -1,0 +1,7 @@
+interface:
+  display_name: "Web API Tester"
+  short_description: "Generate endpoint tests and API contract coverage."
+  default_prompt: |
+    Use $web-api-tester to parse openapi.yaml, generate endpoint test cases
+    for success and failure paths, and emit api-test-report.json with
+    coverage metrics.
