@@ -36,6 +36,9 @@ jobs:
       - name: Run bug bounty pentest scenarios
         run: python tests/scenarios/test_pentest_bug_bounty_programs.py
 
+      - name: Run nmap pentest regression scenario
+        run: python tests/scenarios/test_nmap_pentest_scans_regression.py
+
       - name: Run scenario tests
         run: python tests/scenarios/run_agentic_scenarios.py
 
