@@ -4,6 +4,22 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog principles and uses Semantic Versioning.
 
+## [v3.0.2] - 2026-02-26
+
+### Changed
+- Hardened shared pentest runtime scope validation:
+  - handles invalid `scope.json` gracefully
+  - supports broader target matching (domain/url/ip-range/aws-account/apk variants)
+  - applies out-of-scope checks to host-normalized targets
+- Hardened input handling for malformed JSON payloads in pentest scripts.
+
+### Added
+- Extended pentest scenario coverage for all 22 skills:
+  - multiple scope target-type scenarios
+  - missing and invalid scope file behavior
+  - non-dry-run authorization gating checks
+  - live-mode artifact creation checks
+
 ## [v3.0.1] - 2026-02-26
 
 ### Added
@@ -34,4 +50,3 @@ The format follows Keep a Changelog principles and uses Semantic Versioning.
 
 ### Added
 - Web builder skill pack and full pipeline validation.
-
