@@ -4,6 +4,11 @@ All notable changes to this project are documented in this file.
 
 The format follows Keep a Changelog principles and uses Semantic Versioning.
 
+## [Unreleased]
+
+### Added
+- Added `nmap-pentest-scans` skill with scope-validated Nmap planning workflow, command templates, and deterministic output artifacts.
+
 ## [v3.0.2] - 2026-02-26
 
 ### Changed

@@ -36,9 +36,9 @@ This repository focuses on deterministic skill contracts, strong validation, and
 
 ## Skill Packs
 
-This repository ships 43 production-ready skills:
+This repository ships 44 production-ready skills:
 - 1 meta skill: `skill-creator-pro`
-- 42 domain skills across cybersecurity, AI/ML+DL, agentic AI, daily automation, web engineering, and authorized pentest operations
+- 43 domain skills across cybersecurity, AI/ML+DL, agentic AI, daily automation, web engineering, and authorized pentest operations
 
 ### Web Builder Skills
 
@@ -77,6 +77,7 @@ This repository ships 43 production-ready skills:
 - `pentest-redteam-ops`
 - `pentest-report-generator`
 - `pentest-remediation-validator`
+- `nmap-pentest-scans`
 
 ## Skill Contract
 
