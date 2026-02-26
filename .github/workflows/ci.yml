@@ -33,6 +33,9 @@ jobs:
       - name: Run pentest scenario tests
         run: python tests/scenarios/test_pentest_skills.py
 
+      - name: Run bug bounty pentest scenarios
+        run: python tests/scenarios/test_pentest_bug_bounty_programs.py
+
       - name: Run scenario tests
         run: python tests/scenarios/run_agentic_scenarios.py
 

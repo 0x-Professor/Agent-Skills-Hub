@@ -22,6 +22,9 @@ if errorlevel 1 exit /b 1
 python tests\scenarios\test_pentest_skills.py
 if errorlevel 1 exit /b 1
 
+python tests\scenarios\test_pentest_bug_bounty_programs.py
+if errorlevel 1 exit /b 1
+
 python tests\scenarios\run_agentic_scenarios.py
 if errorlevel 1 exit /b 1
 
