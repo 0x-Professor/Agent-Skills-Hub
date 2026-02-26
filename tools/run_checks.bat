@@ -10,10 +10,16 @@ if errorlevel 1 exit /b 1
 python tests\smoke\validate_web_builder_skills.py
 if errorlevel 1 exit /b 1
 
+python tests\smoke\validate_pentest_skills.py
+if errorlevel 1 exit /b 1
+
 python tests\smoke\run_smoke.py
 if errorlevel 1 exit /b 1
 
 python tests\scenarios\test_web_builder_skills.py
+if errorlevel 1 exit /b 1
+
+python tests\scenarios\test_pentest_skills.py
 if errorlevel 1 exit /b 1
 
 python tests\scenarios\run_agentic_scenarios.py

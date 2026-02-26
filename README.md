@@ -2,9 +2,9 @@
 
 Public skill pack for AI coding/automation agents.
 
-This repository ships 21 production-ready skills:
+This repository ships 43 production-ready skills:
 - 1 meta skill: `skill-creator-pro`
-- 20 domain skills across cybersecurity, AI/ML+DL, agentic AI, daily automation, and web engineering
+- 42 domain skills across cybersecurity, AI/ML+DL, agentic AI, daily automation, web engineering, and authorized pentest operations
 
 ## Repo Layout
 
@@ -40,6 +40,28 @@ This repository ships 21 production-ready skills:
 - `web-frontend-tester`
 - `web-security-auditor`
 - `web-deploy-launcher`
+- `pentest-engagement-planner`
+- `pentest-recon-osint`
+- `pentest-network-scanner`
+- `pentest-vuln-analyzer`
+- `pentest-web-app-attacker`
+- `pentest-api-attacker`
+- `pentest-auth-bypass`
+- `pentest-injection-engine`
+- `pentest-network-exploiter`
+- `pentest-priv-escalation`
+- `pentest-active-directory`
+- `pentest-cloud-auditor`
+- `pentest-container-k8s`
+- `pentest-wireless-attacker`
+- `pentest-social-engineer`
+- `pentest-mobile-auditor`
+- `pentest-lateral-movement`
+- `pentest-c2-operator`
+- `pentest-data-exfil-tester`
+- `pentest-redteam-ops`
+- `pentest-report-generator`
+- `pentest-remediation-validator`
 
 ## Web Builder Skills
 
@@ -84,8 +106,10 @@ Requirements:
 python -m pip install --user pyyaml skills-ref
 python tests\smoke\validate_all_skills.py
 python tests\smoke\validate_web_builder_skills.py
+python tests\smoke\validate_pentest_skills.py
 python tests\smoke\run_smoke.py
 python tests\scenarios\test_web_builder_skills.py
+python tests\scenarios\test_pentest_skills.py
 python tests\scenarios\run_agentic_scenarios.py
 python tests\scenarios\run_agentskills_reference_checks.py
 tools\run_checks.bat
@@ -143,7 +167,7 @@ The automated checks enforce:
 - cross-platform description limits (Claude-compatible)
 - script CLI contract across all skills
 - deterministic dry-run behavior for every script
-- scenario-level integration coverage across all 21 skills
+- scenario-level integration coverage across all 43 skills
 - Agent Skills reference library validation and prompt generation checks
 
 ## Contributing
@@ -174,4 +198,4 @@ tools\publish_github.bat
 
 ## Security Scope
 
-Cybersecurity skills in this repo are defensive or tooling-oriented. They do not ship exploit payloads or real-target offensive playbooks.
+Cybersecurity skills in this repo include an authorized-use pentest pack with strict scope gating (`scope.json`), dry-run defaults, and explicit operator authorization requirements.
