@@ -1,0 +1,58 @@
+name: Bug report
+description: Report a reproducible bug in scripts, validations, or skill metadata.
+title: "[bug] <short description>"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide a minimal reproducible case and exact command output.
+  - type: input
+    id: skill_name
+    attributes:
+      label: Skill name
+      description: Which skill or tool is affected?
+      placeholder: pentest-web-app-attacker
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command used
+      description: Paste the full command.
+      placeholder: python skills/pentest-web-app-attacker/scripts/web_app_attacker.py --help
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      description: Include stderr/stdout and tracebacks.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      options:
+        - Critical (blocks CI or release)
+        - High (breaks core workflow)
+        - Medium (workaround exists)
+        - Low (minor issue)
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks completed
+      options:
+        - label: I ran the relevant smoke/scenario tests locally.
+          required: true
+        - label: I confirmed this issue is not already reported.
+          required: true

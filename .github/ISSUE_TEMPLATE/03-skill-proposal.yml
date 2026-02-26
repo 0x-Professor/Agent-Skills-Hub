@@ -1,0 +1,51 @@
+name: New skill proposal
+description: Propose a new skill aligned to repository contracts.
+title: "[skill] <skill-name>"
+labels: ["skill", "proposal"]
+body:
+  - type: input
+    id: skill_name
+    attributes:
+      label: Proposed skill name
+      description: Must be hyphen-case and <= 64 chars.
+      placeholder: data-pipeline-auditor
+    validations:
+      required: true
+  - type: textarea
+    id: trigger
+    attributes:
+      label: Trigger condition
+      description: When should the skill be used?
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Contract outline
+      description: Expected files (`SKILL.md`, `agents/openai.yaml`, scripts, references).
+    validations:
+      required: true
+  - type: textarea
+    id: script_cli
+    attributes:
+      label: Script CLI
+      description: Proposed flags and output contract details.
+      placeholder: --input --output --format --dry-run
+    validations:
+      required: true
+  - type: textarea
+    id: validations
+    attributes:
+      label: Validation plan
+      description: What smoke/scenario tests are required?
+    validations:
+      required: true
+  - type: checkboxes
+    id: policy
+    attributes:
+      label: Policy checks
+      options:
+        - label: I verified this proposal does not require unsafe or unauthorized behavior.
+          required: true
+        - label: I verified the proposal aligns with existing repo contracts.
+          required: true

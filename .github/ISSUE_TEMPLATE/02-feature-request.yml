@@ -1,0 +1,42 @@
+name: Feature request
+description: Request a new capability or improvement for skills, tests, or tooling.
+title: "[feature] <short description>"
+labels: ["enhancement"]
+body:
+  - type: input
+    id: area
+    attributes:
+      label: Area
+      description: Which area is this for?
+      placeholder: skills/pentest-report-generator
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What user problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Include expected contract changes, script flags, or output changes.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How should this be validated?
+      placeholder: |
+        - update tests/smoke/...
+        - add scenario for ...
+        - run tools/run_checks.bat successfully
+    validations:
+      required: true

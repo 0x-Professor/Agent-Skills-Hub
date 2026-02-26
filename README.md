@@ -1,35 +1,47 @@
 # Agent Skills Hub
 
-Public skill pack for AI coding/automation agents.
+[![CI](https://github.com/0x-Professor/Agent-Skills-Hub/actions/workflows/ci.yml/badge.svg)](https://github.com/0x-Professor/Agent-Skills-Hub/actions/workflows/ci.yml)
+![GitHub Release](https://img.shields.io/github/v/release/0x-Professor/Agent-Skills-Hub)
+![License](https://img.shields.io/github/license/0x-Professor/Agent-Skills-Hub)
+
+Production-ready skill packs for AI coding agents: Codex, Claude Code, Cursor, Aider, Continue, and Agent Skills-compatible runtimes.
+
+This repository focuses on deterministic skill contracts, strong validation, and reusable automation patterns for:
+- agentic workflows and MCP servers
+- web engineering pipelines
+- ML/DL experiment workflows
+- cybersecurity triage and authorized penetration-testing workflows
+
+## Why This Repository
+
+- Standardized skill contract (`SKILL.md`, `agents/openai.yaml`, script CLI contract)
+- Cross-platform packaging and compatibility checks
+- Deterministic dry-run behavior for safe automation
+- Scenario tests validating end-to-end skill behavior
+- Security-first controls in pentest skills (scope gating and authorization requirements)
+
+## Repository Layout
+
+```text
+./
+  .github/
+    workflows/
+  skills/
+  tests/
+    smoke/
+    scenarios/
+    security/
+  tools/
+```
+
+## Skill Packs
 
 This repository ships 43 production-ready skills:
 - 1 meta skill: `skill-creator-pro`
 - 42 domain skills across cybersecurity, AI/ML+DL, agentic AI, daily automation, web engineering, and authorized pentest operations
 
-## Repo Layout
+### Web Builder Skills
 
-```text
-./
-  .github/workflows/ci.yml
-  skills/
-  tests/smoke/
-  tests/scenarios/
-  tools/
-```
-
-## Included Skills
-
-- `skill-creator-pro`
-- `cyber-kev-triage`
-- `cyber-ir-playbook`
-- `cyber-owasp-review`
-- `ml-experiment-tracker`
-- `ml-model-eval-benchmark`
-- `dl-transformer-finetune`
-- `agentic-mcp-server-builder`
-- `agentic-workflow-automation`
-- `google-workspace-automation`
-- `docs-pipeline-automation`
 - `web-stack-planner`
 - `web-ux-architect`
 - `web-frontend-designer`
@@ -40,6 +52,9 @@ This repository ships 43 production-ready skills:
 - `web-frontend-tester`
 - `web-security-auditor`
 - `web-deploy-launcher`
+
+### Pentester Skills
+
 - `pentest-engagement-planner`
 - `pentest-recon-osint`
 - `pentest-network-scanner`
@@ -63,47 +78,52 @@ This repository ships 43 production-ready skills:
 - `pentest-report-generator`
 - `pentest-remediation-validator`
 
-## Web Builder Skills
-
-- `web-stack-planner`
-- `web-ux-architect`
-- `web-frontend-designer`
-- `web-backend-builder`
-- `web-auth-integrator`
-- `web-database-validator`
-- `web-api-tester`
-- `web-frontend-tester`
-- `web-security-auditor`
-- `web-deploy-launcher`
-
 ## Skill Contract
 
 Each skill follows:
 - `SKILL.md` with YAML frontmatter (`name`, `description`)
 - `agents/openai.yaml` with `display_name`, `short_description`, `default_prompt`
-- Optional `scripts/`, `references/`, `assets/`
+- optional `scripts/`, `references/`, `assets/`
 
-All executable scripts follow the same CLI contract:
+All executable scripts follow this CLI contract:
 - `--input <path>`
 - `--output <path>`
 - `--format json|md|csv` (default `json`)
 - `--dry-run`
 
-Output contract for `json` format:
-- `status`: `ok|warning|error`
-- `summary`: short result
-- `artifacts`: output artifacts
-- `details`: tool-specific object
+Pentest skill scripts also enforce:
+- `--scope <scope.json>`
+- `--target <target>`
+- `--i-have-authorization` for non-dry-run mode
 
-## Validate Locally
+JSON output contract:
+- `status`: `ok|warning|error`
+- `summary`
+- `artifacts`
+- `details`
+
+## Quick Start
 
 Requirements:
 - Python 3.10+
 - `pyyaml`
 - `skills-ref`
 
+Install dependencies:
+
 ```bat
 python -m pip install --user pyyaml skills-ref
+```
+
+Run full checks:
+
+```bat
+tools\run_checks.bat
+```
+
+Run key checks manually:
+
+```bat
 python tests\smoke\validate_all_skills.py
 python tests\smoke\validate_web_builder_skills.py
 python tests\smoke\validate_pentest_skills.py
@@ -112,90 +132,57 @@ python tests\scenarios\test_web_builder_skills.py
 python tests\scenarios\test_pentest_skills.py
 python tests\scenarios\run_agentic_scenarios.py
 python tests\scenarios\run_agentskills_reference_checks.py
-tools\run_checks.bat
+python tests\security\run_security_regressions.py
 ```
 
 ## CI
 
-GitHub Actions runs:
-- skill validation
-- smoke tests for every script (`--help`, `json`, `md`, and `csv` dry-runs)
-- scenario/E2E tests for agentic application flows
-- `skills-ref` compatibility checks against Agent Skills reference APIs
+GitHub Actions validates:
+- all skill metadata and contracts
+- smoke tests and scenario tests
+- security regression checks
+- packaging compatibility for Claude uploads
 
-## Cross-Platform Compatibility
+## Releases and Changelog
 
-This repository follows the Agent Skills pattern:
-- `SKILL.md` for core behavior and triggers
-- `agents/openai.yaml` for OpenAI/Codex UI metadata
-- deterministic scripts with `--dry-run`
+- See [CHANGELOG.md](CHANGELOG.md) for version history.
+- GitHub releases are generated from tags and curated release notes.
+- Release configuration lives in `.github/release.yml`.
+- Current release notes source: `releases/v3.0.1.md`
 
-Compatibility notes:
-- Codex:
-  - Skills can live in repo-level `.agents/skills` or user-level configured skill paths.
-  - This repo keeps source-of-truth skills in `skills/`.
-  - Copy a skill folder into your Codex skill path, or install from this repository.
-  - Reference: https://developers.openai.com/codex/configuration#skills
-- Claude Code / Claude.ai custom skills:
-  - Zip each skill with `<skill-name>/SKILL.md` at zip root for upload.
-  - Keep `description` <= 200 chars for Claude.ai upload compatibility.
-  - Reference: https://support.anthropic.com/en/articles/12522847-building-custom-skills-for-claude-ai
-- Agent Skills ecosystem:
-  - Reference spec and integrations: https://agentskills.io/spec and https://agentskills.io/integrations
+## SEO and Discoverability Notes
 
-## Agent Skills Compliance
+For repository discoverability in GitHub search, keep:
+- concise keyword-rich repository description
+- clear README headings and domain terms (AI agents, MCP, pentest skills, web builder skills)
+- active releases with tags and release notes
+- consistent labels and issue templates
 
-This repository is aligned to the Agent Skills reference model from `agentskills.io`:
-- every skill includes `SKILL.md` with required frontmatter (`name`, `description`)
-- frontmatter `name` matches the skill folder name
-- optional frontmatter keys accepted by validation include `compatibility`, `license`, `allowed-tools`, and `metadata`
-- every skill includes `agents/openai.yaml` with `display_name`, `short_description`, and `default_prompt`
-- compatibility checks are validated in `tests/scenarios/run_agentskills_reference_checks.py` using `skills-ref`
+Recommended GitHub repository topics:
+- `ai-agents`
+- `codex`
+- `claude-code`
+- `agent-skills`
+- `mcp`
+- `prompt-engineering`
+- `developer-tools`
+- `security-automation`
+- `penetration-testing`
+- `owasp`
+- `mitre-attack`
+- `devsecops`
 
-## Packaging for Claude Uploads
+## Compatibility
 
-Use this helper to package all skills as individual zip files:
-
-```bat
-python tools\package_skills_for_claude.py --output artifacts\claude-zips
-```
-
-## Production Readiness Checks
-
-The automated checks enforce:
-- valid frontmatter and metadata contracts
-- cross-platform description limits (Claude-compatible)
-- script CLI contract across all skills
-- deterministic dry-run behavior for every script
-- scenario-level integration coverage across all 43 skills
-- Agent Skills reference library validation and prompt generation checks
+- Codex: https://developers.openai.com/codex/configuration#skills
+- Claude custom skills: https://support.anthropic.com/en/articles/12522847-building-custom-skills-for-claude-ai
+- Agent Skills spec: https://agentskills.io/spec
 
 ## Contributing
 
-See `CONTRIBUTING.md` for contribution workflow, quality gates, and review requirements.
-
-## Publish To GitHub
-
-Prerequisites:
-- Git CLI installed
-- GitHub CLI (`gh`) installed and authenticated
-
-```bat
-gh auth login
-git init -b main
-git add .
-git commit -m "feat: initial public release of agent skills hub v1"
-gh repo create agent-skills-hub --public --source . --remote origin --push
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-Or run:
-
-```bat
-tools\publish_github.bat
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Security Scope
 
-Cybersecurity skills in this repo include an authorized-use pentest pack with strict scope gating (`scope.json`), dry-run defaults, and explicit operator authorization requirements.
+Cybersecurity and pentest skills are for authorized use only.  
+Unauthorized access testing is illegal. Use dry-run mode unless written authorization exists.

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability report
+    url: https://github.com/0x-Professor/Agent-Skills-Hub/security/advisories/new
+    about: Report sensitive vulnerabilities privately via GitHub Security Advisories.
+  - name: Documentation
+    url: https://github.com/0x-Professor/Agent-Skills-Hub/blob/main/README.md
+    about: Check repository documentation and validation commands first.

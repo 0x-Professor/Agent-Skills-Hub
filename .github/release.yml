@@ -1,0 +1,28 @@
+changelog:
+  exclude:
+    labels:
+      - skip-changelog
+      - duplicate
+      - invalid
+      - question
+      - wontfix
+  categories:
+    - title: Breaking Changes
+      labels:
+        - breaking-change
+    - title: New Skills
+      labels:
+        - skill
+        - feature
+    - title: Fixes
+      labels:
+        - bug
+        - fix
+    - title: Tooling and CI
+      labels:
+        - ci
+        - tooling
+        - tests
+    - title: Documentation
+      labels:
+        - docs
