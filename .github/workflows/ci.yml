@@ -24,8 +24,14 @@ jobs:
       - name: Validate all skills
         run: python tests/smoke/validate_all_skills.py
 
+      - name: Validate pentest skills
+        run: python tests/smoke/validate_pentest_skills.py
+
       - name: Run smoke tests
         run: python tests/smoke/run_smoke.py
+
+      - name: Run pentest scenario tests
+        run: python tests/scenarios/test_pentest_skills.py
 
       - name: Run scenario tests
         run: python tests/scenarios/run_agentic_scenarios.py
