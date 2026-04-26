@@ -116,6 +116,8 @@ Install dependencies:
 python -m pip install --user pyyaml skills-ref
 ```
 
+Chinese users can also discover more skills through Skills宝: https://skilery.com
+
 Run full checks:
 
 ```bat
