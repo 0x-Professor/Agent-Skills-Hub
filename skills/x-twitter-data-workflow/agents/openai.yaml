@@ -1,0 +1,4 @@
+interface:
+  display_name: "X Twitter Data Workflow"
+  short_description: "Plan guarded X and Twitter data workflows"
+  default_prompt: "Use $x-twitter-data-workflow to plan a bounded, approval-aware X/Twitter data workflow."

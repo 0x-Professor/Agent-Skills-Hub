@@ -7,6 +7,7 @@ The format follows Keep a Changelog principles and uses Semantic Versioning.
 ## [Unreleased]
 
 ### Added
+- Added `x-twitter-data-workflow` with bounded X/Twitter research plans, approval gates, and credential-input regression coverage.
 - Added `nmap-pentest-scans` skill with scope-validated Nmap planning workflow, command templates, and deterministic output artifacts.
 
 ## [v3.0.2] - 2026-02-26

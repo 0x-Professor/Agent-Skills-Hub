@@ -299,6 +299,69 @@ def run_agentic_automation_scenario(temp_dir: Path) -> dict:
     }
 
 
+def run_x_twitter_data_scenario(temp_dir: Path) -> dict:
+    script = "skills/x-twitter-data-workflow/scripts/plan_x_twitter_workflow.py"
+    search_result, _ = run_script(
+        script,
+        {
+            "workflow": "tweet_search",
+            "query": '"agent skills" lang:en -is:retweet',
+            "max_results": 40,
+            "since": "2026-08-01",
+            "until": "2026-08-19",
+        },
+        temp_dir,
+    )
+    assert isinstance(search_result, dict)
+    search_details = search_result["details"]
+    if search_details["endpoint"] != "/x/tweets/search":
+        raise ScenarioError("x-twitter-data-workflow: tweet search endpoint is incorrect")
+    if search_details["requires_confirmation"]:
+        raise ScenarioError("x-twitter-data-workflow: bounded public search should not add a confirmation gate")
+    if search_details["execution_performed"]:
+        raise ScenarioError("x-twitter-data-workflow: planner must never execute network requests")
+    if search_details["parameters"]["max_results"] != 40:
+        raise ScenarioError("x-twitter-data-workflow: result limit was not preserved")
+
+    export_result, _ = run_script(
+        script,
+        {"workflow": "follower_export", "username": "github", "max_results": 100},
+        temp_dir,
+    )
+    assert isinstance(export_result, dict)
+    export_details = export_result["details"]
+    if not export_details["requires_confirmation"]:
+        raise ScenarioError("x-twitter-data-workflow: bulk export must require confirmation")
+    step_names = [step["name"] for step in export_details["steps"]]
+    if "request_confirmation" not in step_names:
+        raise ScenarioError("x-twitter-data-workflow: bulk export plan is missing its approval step")
+
+    write_result, _ = run_script(
+        script,
+        {
+            "workflow": "account_action",
+            "action": "create_tweet",
+            "action_payload": {
+                "account": "@example_account",
+                "text": "A reviewed release update.",
+            },
+        },
+        temp_dir,
+    )
+    assert isinstance(write_result, dict)
+    write_details = write_result["details"]
+    if write_details["method"] != "POST" or write_details["endpoint"] != "/x/tweets":
+        raise ScenarioError("x-twitter-data-workflow: create_tweet route mapping is incorrect")
+    if not write_details["requires_confirmation"] or write_details["execution_performed"]:
+        raise ScenarioError("x-twitter-data-workflow: account writes must remain gated and unexecuted")
+
+    return {
+        "search_steps": len(search_details["steps"]),
+        "bulk_export_confirmation": export_details["requires_confirmation"],
+        "account_write_confirmation": write_details["requires_confirmation"],
+    }
+
+
 def run_skill_lifecycle_scenario(temp_dir: Path) -> dict:
     generated_root = temp_dir / "generated-skills"
     starter_payload = {
@@ -371,6 +434,7 @@ def main() -> int:
         scenarios.append(("security_ops", run_security_ops_scenario(temp_dir)))
         scenarios.append(("mlops_lifecycle", run_mlops_scenario(temp_dir)))
         scenarios.append(("agentic_automation", run_agentic_automation_scenario(temp_dir)))
+        scenarios.append(("x_twitter_data", run_x_twitter_data_scenario(temp_dir)))
         scenarios.append(("skill_lifecycle", run_skill_lifecycle_scenario(temp_dir)))
 
     summary = {"status": "ok", "scenarios": {name: details for name, details in scenarios}}

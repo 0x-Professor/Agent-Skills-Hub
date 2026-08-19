@@ -23,6 +23,7 @@ SCRIPT_CASES = [
     ("skills/agentic-workflow-automation/scripts/generate_workflow_blueprint.py", "agentic_workflow_input.json"),
     ("skills/google-workspace-automation/scripts/plan_workspace_automation.py", "workspace_input.json"),
     ("skills/docs-pipeline-automation/scripts/compose_docs_pipeline.py", "docs_pipeline_input.json"),
+    ("skills/x-twitter-data-workflow/scripts/plan_x_twitter_workflow.py", "x_twitter_workflow_input.json"),
 ]
 
 

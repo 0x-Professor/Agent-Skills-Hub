@@ -1,0 +1,7 @@
+{
+  "workflow": "tweet_search",
+  "query": "\"MCP server\" lang:en -is:retweet",
+  "max_results": 25,
+  "since": "2026-08-12",
+  "until": "2026-08-19"
+}
