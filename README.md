@@ -36,9 +36,15 @@ This repository focuses on deterministic skill contracts, strong validation, and
 
 ## Skill Packs
 
-This repository ships 44 production-ready skills:
+This repository ships 45 production-ready skills:
 - 1 meta skill: `skill-creator-pro`
-- 43 domain skills across cybersecurity, AI/ML+DL, agentic AI, daily automation, web engineering, and authorized pentest operations
+- 44 domain skills across cybersecurity, AI/ML+DL, agentic AI, daily automation, web engineering, and authorized pentest operations
+
+### Agentic Workflow Skills
+
+- `agentic-mcp-server-builder`
+- `agentic-workflow-automation`
+- `x-twitter-data-workflow`
 
 ### Web Builder Skills
 

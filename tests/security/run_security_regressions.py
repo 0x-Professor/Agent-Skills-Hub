@@ -172,6 +172,104 @@ def test_oversized_input_rejected() -> str:
     return "oversized payload rejected"
 
 
+def test_x_twitter_credentials_rejected() -> str:
+    script = ROOT / "skills" / "x-twitter-data-workflow" / "scripts" / "plan_x_twitter_workflow.py"
+    with tempfile.TemporaryDirectory() as tmp:
+        tmpdir = Path(tmp)
+        cases = [
+            ("authorization", "Credential fields are not allowed"),
+            ("authorizationHeader", "Credential fields are not allowed"),
+            ("x-api-key", "Credential fields are not allowed"),
+            ("accessToken", "Credential fields are not allowed"),
+            ("clientSecret", "Credential fields are not allowed"),
+            ("auth", "fields not supported by the selected workflow"),
+        ]
+        for index, (field, expected_error) in enumerate(cases):
+            credential_value = f"credential_value_{index}"
+            input_path = tmpdir / f"input-{index}.json"
+            output_path = tmpdir / f"output-{index}.json"
+            write_json(
+                input_path,
+                {
+                    "workflow": "tweet_search",
+                    "query": "agent skills",
+                    "metadata": {field: credential_value},
+                },
+            )
+            proc = run(
+                [
+                    sys.executable,
+                    str(script),
+                    "--input",
+                    str(input_path),
+                    "--output",
+                    str(output_path),
+                    "--format",
+                    "json",
+                    "--dry-run",
+                ],
+                cwd=ROOT,
+            )
+            assert_fails_with(
+                proc,
+                expected_error,
+                f"x_twitter_credentials_rejected[{field}]",
+            )
+            if credential_value in f"{proc.stdout}\n{proc.stderr}":
+                raise SecurityTestError(
+                    f"x_twitter_credentials_rejected[{field}]: credential value leaked"
+                )
+            if output_path.exists():
+                raise SecurityTestError(
+                    f"x_twitter_credentials_rejected[{field}]: output should not be created"
+                )
+    return "X/Twitter workflow credential input rejected without leakage"
+
+
+def test_x_twitter_local_destinations_rejected() -> str:
+    script = ROOT / "skills" / "x-twitter-data-workflow" / "scripts" / "plan_x_twitter_workflow.py"
+    destinations = [
+        "https://127.0.0.1/hook",
+        "https://127.1/hook",
+        "https://[::1]/hook",
+        "https://localhost/hook",
+        "https://example.com/hook?token=signed_value",
+    ]
+    with tempfile.TemporaryDirectory() as tmp:
+        tmpdir = Path(tmp)
+        for index, destination in enumerate(destinations):
+            input_path = tmpdir / f"destination-{index}.json"
+            output_path = tmpdir / f"destination-{index}-output.json"
+            write_json(
+                input_path,
+                {
+                    "workflow": "mention_monitor",
+                    "username": "github",
+                    "destination_url": destination,
+                },
+            )
+            proc = run(
+                [
+                    sys.executable,
+                    str(script),
+                    "--input",
+                    str(input_path),
+                    "--output",
+                    str(output_path),
+                    "--format",
+                    "json",
+                    "--dry-run",
+                ],
+                cwd=ROOT,
+            )
+            assert_fails_with(proc, "destination_url must", f"x_twitter_destination[{index}]")
+            if output_path.exists():
+                raise SecurityTestError(
+                    f"x_twitter_destination[{index}]: output should not be created"
+                )
+    return "X/Twitter workflow local and credential-bearing destinations rejected"
+
+
 def test_packaging_rejects_symlink() -> str:
     script = ROOT / "tools" / "package_skills_for_claude.py"
     with tempfile.TemporaryDirectory() as tmp:
@@ -225,6 +323,8 @@ def main() -> int:
         test_target_dir_boundary,
         test_allow_outside_workspace_flag,
         test_oversized_input_rejected,
+        test_x_twitter_credentials_rejected,
+        test_x_twitter_local_destinations_rejected,
         test_packaging_rejects_symlink,
     ]
     results: list[str] = []
